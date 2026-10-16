@@ -1,0 +1,8 @@
+{
+  "accentColor": "#8C3A2F",
+  "theme": "obsidian",
+  "baseFontSize": 18,
+  "translucency": false,
+  "enabledCssSnippets": ["حراج-الرياض"],
+  "nativeMenus": true
+}

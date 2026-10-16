@@ -1,0 +1,16 @@
+{
+  "promptDelete": false,
+  "alwaysUpdateLinks": true,
+  "attachmentFolderPath": "المتجر",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "إعلانات",
+  "showInlineTitle": false,
+  "readableLineLength": true,
+  "strictLineBreaks": false,
+  "defaultViewMode": "preview",
+  "livePreview": true,
+  "rtl": true,
+  "showFrontmatter": true,
+  "spellcheck": true,
+  "propertiesInDocument": "visible"
+}

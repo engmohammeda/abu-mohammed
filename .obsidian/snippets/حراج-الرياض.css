@@ -1,0 +1,120 @@
+/* خزنة حراج الرياض — عرض عربي احترافي */
+
+body {
+  --accent-h: 8;
+  --accent-s: 51%;
+  --accent-l: 37%;
+  --font-text-theme: "Segoe UI", "Tahoma", "Geeza Pro", "Noto Naskh Arabic", "SF Arabic", sans-serif;
+  --font-interface-theme: "Segoe UI", "Tahoma", "Geeza Pro", "Noto Naskh Arabic", sans-serif;
+  --h1-color: #1c1917;
+  --h2-color: #8c3a2f;
+  --h3-color: #6b3a2a;
+}
+
+.markdown-preview-view,
+.markdown-reading-view,
+.markdown-source-view.mod-cm6 {
+  direction: rtl;
+}
+
+.markdown-preview-view .markdown-preview-sizer,
+.markdown-reading-view .markdown-preview-sizer {
+  max-width: 860px;
+  padding-top: 1.4rem;
+  padding-bottom: 4rem;
+}
+
+.markdown-preview-view h1,
+.markdown-reading-view h1 {
+  font-size: 2.05em;
+  letter-spacing: 0;
+  border-bottom: 2px solid #8c3a2f;
+  padding-bottom: 0.28em;
+  margin-bottom: 0.7em;
+}
+
+.markdown-preview-view h2,
+.markdown-reading-view h2 {
+  margin-top: 1.6em;
+  padding-right: 0.55em;
+  border-right: 4px solid #c4a15a;
+}
+
+.markdown-preview-view h3,
+.markdown-reading-view h3 {
+  color: #6b3a2a;
+}
+
+.markdown-preview-view code,
+.markdown-preview-view pre,
+.markdown-preview-view .HyperMD-codeblock,
+.markdown-reading-view code,
+.markdown-reading-view pre,
+.cm-s-obsidian div.HyperMD-codeblock-bg,
+.markdown-preview-view .mermaid,
+.markdown-reading-view .mermaid {
+  direction: ltr;
+  text-align: left;
+}
+
+.markdown-preview-view pre,
+.markdown-reading-view pre {
+  border-radius: 12px;
+  border: 1px solid rgba(140, 58, 47, 0.18);
+}
+
+.markdown-preview-view img,
+.markdown-reading-view img {
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(28, 25, 23, 0.14);
+}
+
+.markdown-preview-view table,
+.markdown-reading-view table {
+  direction: rtl;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.markdown-preview-view th,
+.markdown-reading-view th {
+  background: #1c1917;
+  color: #f3ede0;
+}
+
+.markdown-preview-view td,
+.markdown-preview-view th,
+.markdown-reading-view td,
+.markdown-reading-view th {
+  border: 1px solid rgba(140, 58, 47, 0.18);
+  padding: 0.45em 0.7em;
+}
+
+.markdown-preview-view tr:nth-child(even) td,
+.markdown-reading-view tr:nth-child(even) td {
+  background: rgba(231, 215, 193, 0.28);
+}
+
+.callout {
+  border-radius: 14px;
+}
+
+.dashboard .callout[data-callout="abstract"] {
+  background: #1c1917;
+  color: #f3ede0;
+  border: none;
+}
+
+.dashboard .callout[data-callout="abstract"] .callout-title {
+  color: #c4a15a;
+}
+
+.dashboard .callout[data-callout="abstract"] .callout-content {
+  color: #f3ede0;
+}
+
+.internal-embed.markdown-embed {
+  border-right: 3px solid #c4a15a;
+  border-radius: 10px;
+  padding-right: 0.4em;
+}
