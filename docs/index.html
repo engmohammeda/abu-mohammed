@@ -148,6 +148,25 @@ footer small{display:block;margin-top:10px;color:#8d8177}
 .rev{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .rev.on{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}.hero *{animation:none}}
+
+/* ---------- قائمة جوال ---------- */
+.menu-btn{display:none;background:transparent;border:2px solid var(--ember);color:var(--ember);border-radius:10px;padding:6px 12px;font-size:1.3rem;cursor:pointer}
+.mobile-nav{display:none;position:fixed;top:68px;inset-inline:0;background:rgba(28,25,23,.98);padding:14px 20px;flex-direction:column;gap:8px;z-index:49;border-bottom:2px solid var(--ember)}
+.mobile-nav a{color:var(--sand);padding:10px 0;font-weight:700;border-bottom:1px solid rgba(231,215,193,.15)}
+.mobile-nav.open{display:flex}
+@media(max-width:900px){.menu-btn{display:inline-block}}
+
+/* ---------- نموذج التواصل ---------- */
+.contact{background:var(--sand)}
+.lead-form{background:#fff;border-radius:18px;padding:28px 26px;box-shadow:0 4px 18px rgba(28,25,23,.08);max-width:640px}
+.lead-form .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lead-form label{display:block;margin-bottom:14px;font-weight:700;font-size:.92rem;color:var(--charcoal)}
+.lead-form input,.lead-form select,.lead-form textarea{width:100%;margin-top:6px;padding:12px 14px;border:1px solid #d6c9b4;border-radius:12px;font-family:inherit;font-size:1rem;background:var(--cream)}
+.lead-form button{width:100%;margin-top:6px}
+.form-status{margin-top:12px;font-weight:700;font-size:.92rem;min-height:1.2em}
+.form-status.ok{color:var(--wa)}
+.form-status.err{color:var(--brick)}
+@media(max-width:600px){.lead-form .row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -164,11 +183,20 @@ footer small{display:block;margin-top:10px;color:#8d8177}
       <a href="#order">خطوات العمل</a>
       <a href="#faq">الأسئلة الشائعة</a>
     </nav>
+    <button class="menu-btn" id="menuBtn" aria-label="القائمة" aria-expanded="false">☰</button>
     <div class="head-ctas">
       <a class="call-btn num" href="tel:0531060401">0531060401</a>
     </div>
   </div>
 </header>
+
+<nav class="mobile-nav" id="mobileNav" aria-hidden="true">
+  <a href="#styles">الأنماط</a>
+  <a href="#gallery">المعرض</a>
+  <a href="#order">خطوات العمل</a>
+  <a href="#faq">الأسئلة الشائعة</a>
+  <a href="#contact">تواصل</a>
+</nav>
 
 <section class="hero" id="top">
   <div class="wrap">
@@ -255,6 +283,31 @@ footer small{display:block;margin-top:10px;color:#8d8177}
   </div>
 </section>
 
+<section class="contact" id="contact">
+  <div class="wrap">
+    <h2 class="h2 rev">أرسل صورة المكان — نعطيك السعر</h2>
+    <p class="lead rev">املأ النموذج أو تواصل عبر واتساب. نرد خلال 15 دقيقة في أوقات العمل.</p>
+    <form id="leadForm" class="lead-form rev" novalidate>
+      <div class="row">
+        <label>الاسم<input type="text" name="name" placeholder="اسمك (اختياري)" maxlength="80"></label>
+        <label>الجوال<input type="tel" name="phone" placeholder="05xxxxxxxx" maxlength="20" required></label>
+      </div>
+      <label>نوع الشغل
+        <select name="service">
+          <option value="مشبة">مشبة</option>
+          <option value="فرن">فرن</option>
+          <option value="جدار/فاصل">جدار / فاصل</option>
+          <option value="شويات/منقلة">شويات / منقلة</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+      </label>
+      <label>الرسالة<textarea name="message" rows="4" placeholder="المقاسات التقريبية، الموقع، أي تفاصيل" maxlength="500"></textarea></label>
+      <button type="submit" class="btn btn-call">إرسال الطلب</button>
+      <p class="form-status" id="formStatus" role="status"></p>
+    </form>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <b style="font-size:1.2rem;color:var(--cream)">معلم مباني ومشبات وأفران — الرياض وضواحيها</b><br>
@@ -276,6 +329,45 @@ footer small{display:block;margin-top:10px;color:#8d8177}
 <script>
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.rev').forEach(el=>io.observe(el));
+
+// قائمة جوال
+const menuBtn=document.getElementById('menuBtn');
+const mobileNav=document.getElementById('mobileNav');
+if(menuBtn&&mobileNav){
+  menuBtn.addEventListener('click',()=>{
+    const open=mobileNav.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded',String(open));
+    mobileNav.setAttribute('aria-hidden',String(!open));
+  });
+  mobileNav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mobileNav.classList.remove('open');}));
+}
+
+// نموذج التواصل -> /api/leads
+const form=document.getElementById('leadForm');
+const statusEl=document.getElementById('formStatus');
+if(form){
+  form.addEventListener('submit',async (e)=>{
+    e.preventDefault();
+    statusEl.textContent='جاري الإرسال…';
+    statusEl.className='form-status';
+    const data=Object.fromEntries(new FormData(form).entries());
+    try{
+      const r=await fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...data,source:'website-form'})});
+      const j=await r.json();
+      if(r.ok&&j.ok){
+        statusEl.textContent='تم استلام طلبك. سنتواصل معك قريباً.';
+        statusEl.className='form-status ok';
+        form.reset();
+      }else{
+        statusEl.textContent='تعذّر الإرسال. جرّب واتساب: 0531060401';
+        statusEl.className='form-status err';
+      }
+    }catch(err){
+      statusEl.textContent='لا يوجد اتصال بالخادم. جرّب واتساب: 0531060401';
+      statusEl.className='form-status err';
+    }
+  });
+}
 </script>
 </body>
 </html>

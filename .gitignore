@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+haraj-riyadh-2026/.venv/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Data / secrets
+data/
+*.sqlite
+*.db
+.env
+!.env.example
+
+# Build
+dist/
+build/
+.next/

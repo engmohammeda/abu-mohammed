@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة العملاء — مشبات وأفران</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#F3EDE0;color:#1C1917;margin:0;padding:24px}
+h1{margin:0 0 12px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+input{padding:10px;border:1px solid #d6c9b4;border-radius:10px;font-size:1rem}
+button{padding:10px 16px;border:0;border-radius:10px;background:#8C3A2F;color:#fff;font-weight:700;cursor:pointer}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+th,td{padding:10px;border-bottom:1px solid #eee;text-align:right;font-size:.9rem}
+th{background:#1C1917;color:#F3EDE0}
+.status{margin:12px 0;font-weight:700}
+</style>
+</head>
+<body>
+<h1>لوحة العملاء (محليّة)</h1>
+<div class="toolbar">
+  <input id="token" placeholder="رمز الإدارة" />
+  <button id="load">تحميل</button>
+</div>
+<p class="status" id="status"></p>
+<table id="tbl"><thead><tr><th>التاريخ</th><th>الاسم</th><th>الجوال</th><th>الشغل</th><th>الرسالة</th><th>المصدر</th><th>الحالة</th></tr></thead><tbody></tbody></table>
+<script>
+const loadBtn=document.getElementById('load');
+const statusEl=document.getElementById('status');
+const tbody=document.querySelector('#tbl tbody');
+loadBtn.addEventListener('click',async()=>{
+  const token=document.getElementById('token').value.trim();
+  statusEl.textContent='جاري التحميل…';
+  try{
+    const r=await fetch('/api/leads?token='+encodeURIComponent(token));
+    const j=await r.json();
+    if(!r.ok||!j.ok){statusEl.textContent='فشل: '+(j.error||r.status);return;}
+    statusEl.textContent='عدد العملاء: '+j.count;
+    tbody.innerHTML=j.leads.map(l=>`<tr><td>${l.createdAt}</td><td>${l.name||'-'}</td><td>${l.phone||'-'}</td><td>${l.service||'-'}</td><td>${l.message||'-'}</td><td>${l.source||'-'}</td><td>${l.status}</td></tr>`).join('');
+  }catch(e){statusEl.textContent='خطأ في الاتصال';}
+});
+</script>
+</body>
+</html>

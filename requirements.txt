@@ -1,0 +1,5 @@
+# Python tooling for haraj-riyadh-2026
+Pillow>=10.0.0
+arabic-reshaper>=3.0.0
+python-bidi>=0.4.2
+fonttools>=4.40.0

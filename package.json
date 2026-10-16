@@ -1,11 +1,14 @@
 {
   "name": "haraj-riyadh-mashabat",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "build": "echo 'Static build ready'"
+    "build": "echo 'Static build ready'",
+    "check": "cd haraj-riyadh-2026 && python3 tools/check-banned.py",
+    "render": "cd haraj-riyadh-2026 && python3 tools/render.py --all",
+    "audit:images": "cd haraj-riyadh-2026 && python3 tools/ops.py audit"
   },
   "dependencies": {
     "express": "^4.21.2"
