@@ -1,0 +1,17 @@
+{
+  "types": {
+    "aliases": "aliases",
+    "tags": "tags",
+    "cssclasses": "multitext",
+    "kind": "text",
+    "status": "text",
+    "priority": "text",
+    "channel": "text",
+    "service": "text",
+    "due": "date",
+    "phone": "text",
+    "cover": "text",
+    "created": "date",
+    "updated": "date"
+  }
+}
