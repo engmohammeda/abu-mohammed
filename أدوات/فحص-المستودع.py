@@ -163,9 +163,11 @@ def check_site() -> None:
             add("P1", rel, "لا يوجد meta description")
         if len(h1) != 1:
             add("P1", rel, f"عدد عناوين H1 = {len(h1)}، والمطلوب واحد")
-        if 'rel="canonical"' not in t:
+        # صفحة 404 تُترك بلا canonical وبلا Open Graph عن قصد:
+        # لا يُفهرس عنوان غير موجود، والوسوم عليه تُضلل محركات البحث.
+        if not is_404 and 'rel="canonical"' not in t:
             add("P2", rel, "لا يوجد canonical")
-        if 'property="og:title"' not in t:
+        if not is_404 and 'property="og:title"' not in t:
             add("P2", rel, "لا توجد وسوم Open Graph")
         for src in re.findall(r'src="([^"]+)"', t):
             if src.startswith(("http", "data:")):
