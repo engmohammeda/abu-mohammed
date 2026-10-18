@@ -150,7 +150,7 @@ def compose(
     print(f"  {out.relative_to(ROOT)}")
 
 
-def card(out: Path, title: str, rows: list[tuple[str, str]], footer: str = "") -> None:
+def card(out: Path, title: str, rows: list[tuple[str, str]], footer: str = "", title_size: int = 82) -> None:
     """بطاقة نصية بخلفية داكنة، بلا أرقام أسعار."""
     W, H = 1080, 1080
     img = Image.new("RGBA", (W, H), (18, 18, 18, 255))
@@ -159,7 +159,7 @@ def card(out: Path, title: str, rows: list[tuple[str, str]], footer: str = "") -
     d.rectangle([(0, H - 8), (W, H)], fill=GOLD)
 
     d.text((W // 2, 150), ar(NAME), font=font("Regular", 40), fill=GOLD, anchor="ma")
-    d.text((W // 2, 250), ar(title), font=fit(title, "Bold", 82, W - 140), fill=WHITE, anchor="ma")
+    d.text((W // 2, 250), ar(title), font=fit(title, "Bold", title_size, W - 140), fill=WHITE, anchor="ma")
 
     y = 360
     for head, body in rows:
