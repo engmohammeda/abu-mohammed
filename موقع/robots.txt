@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://engmohammeda.github.io/mydad/sitemap.xml
