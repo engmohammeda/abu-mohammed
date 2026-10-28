@@ -6,7 +6,7 @@
 
 ## الموقع
 
-**الرابط:** https://engmohammeda.github.io/mydad/
+**الرابط:** https://engmohammeda.github.io/abu-mohammed/
 
 | الصفحة | تستهدف |
 |---|---|
@@ -15,6 +15,7 @@
 | `about.html` | أبو محمد معلم بلك ومباني |
 | `khadamat.html` | خدمات معلم البلك والمباني |
 | `aamal.html` | أعمال وصور الشغل |
+| `ads.html` | إعلانات حراج كاملة |
 | `sayr.html` | طريقة العمل |
 | `tawasel.html` | التواصل والرقم |
 
@@ -31,7 +32,7 @@ python3 -m http.server 8000
 ## الهيكل
 
 ```
-mydad/
+abu-mohammed/
 ├── موقع/                  الموقع المنشور على GitHub Pages
 │   ├── *.html             سبع صفحات + صفحة 404
 │   ├── css/ js/           الستايل والسكربت

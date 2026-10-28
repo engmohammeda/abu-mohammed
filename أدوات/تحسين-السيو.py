@@ -23,11 +23,12 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SITE = ROOT / "موقع"
-BASE = "https://engmohammeda.github.io/mydad"
+BASE = "https://engmohammeda.github.io/abu-mohammed"
 
 NAME = "أبو محمد معلم مباني"
 PHONE = "0531060401"
@@ -35,6 +36,12 @@ PHONE_INTL = "+966531060401"
 
 # الصفحة: (العنوان، الوصف، H1، سطر يُحفظ من العنوان القديم)
 PAGES = {
+    "ads.html": (
+        'إعلانات أبو محمد في حراج الرياض',
+        'إعلانات أبو محمد معلم مباني في حراج: بناء بلك وحجر تراثي ومباني ومشبات وأفران في الرياض. كل الإعلانات القديمة والحالية بروابطها. 0531060401',
+        'إعلاناتي في حراج',
+        None,
+    ),
     "404.html": (
         'الصفحة غير موجودة | أبو محمد معلم بلك ومباني في الرياض',
         'الصفحة المطلوبة غير موجودة. أبو محمد معلم بلك ومباني في الرياض. أرسل صورة المكان ونشوف السعر المناسب لشغلك. 0531060401',
@@ -125,7 +132,7 @@ def schema(title: str, desc: str, path: str) -> str:
                 "description": desc,
                 "url": f"{BASE}/",
                 "telephone": PHONE_INTL,
-                "image": f"{BASE}/صور/غلاف.jpg",
+                "image": f"{BASE}/صور/og.jpg",
                 "logo": f"{BASE}/صور/شعار.png",
                 "address": {
                     "@type": "PostalAddress",
@@ -203,7 +210,7 @@ def meta_block(title: str, desc: str, path: str, page: str) -> str:
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{desc}">
   <meta property="og:url" content="{canon}">
-  <meta property="og:image" content="{BASE}/صور/غلاف.jpg">
+  <meta property="og:image" content="{BASE}/صور/og.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{title}">
   <meta name="twitter:description" content="{desc}">
@@ -252,8 +259,11 @@ def fix_joints(html: str) -> str:
 
 def main() -> None:
     changed = []
+    links_only = "--روابط-فقط" in sys.argv
 
     for page, (title, desc, h1, keep) in PAGES.items():
+        if links_only:
+            break
         f = SITE / page
         if not f.exists():
             continue
@@ -296,10 +306,11 @@ def main() -> None:
 
     # sitemap.xml
     prio = {"index.html": "1.0", "balk.html": "0.9", "khadamat.html": "0.9",
-            "aamal.html": "0.8", "about.html": "0.8", "sayr.html": "0.6", "tawasel.html": "0.7"}
+            "aamal.html": "0.8", "ads.html": "0.8", "about.html": "0.8",
+            "sayr.html": "0.6", "tawasel.html": "0.7"}
     urls = []
     for page in ["index.html", "balk.html", "khadamat.html", "aamal.html",
-                 "about.html", "sayr.html", "tawasel.html"]:
+                 "ads.html", "about.html", "sayr.html", "tawasel.html"]:
         if (SITE / page).exists():
             urls.append(
                 f"  <url><loc>{BASE}/{page}</loc>"

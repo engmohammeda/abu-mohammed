@@ -173,9 +173,11 @@ def check_head_basics() -> None:
     }
     for f in sorted(Path("موقع").glob("*.html")):
         html = f.read_text(encoding="utf-8")
-        missing = [msg for key, msg in need.items() if key not in html]
+        # صفحة 404 ليست صفحة محتوى: لا تحتاج canonical ولا وسوم مشاركة
+        keys = {k: v for k, v in need.items() if not (f.name == "404.html" and k == 'rel="canonical"')}
+        missing = [msg for key, msg in keys.items() if key not in html]
         if missing:
-            add("P0", f.relative_to(ROOT), " و ".join(missing))
+            add("P0", f.relative_to(ROOT) if f.is_absolute() else f, " و ".join(missing))
     n = len(list(Path("موقع").glob("*.html")))
     print(f"  فُحص {n} صفحة")
 
