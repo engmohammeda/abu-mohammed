@@ -1,7 +1,32 @@
+# نظام
 .DS_Store
-*.zip
+Thumbs.db
+desktop.ini
+
+# بايثون
 __pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# أوبسيديان — إعدادات محلية فقط
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
 .obsidian/cache
 .obsidian/plugins/*/data.json
+
+# ملفات مضغوطة ونسخ احتياطية
+*.zip
+*.rar
+*.7z
+*.bak
+*~
+
+# أسرار — لا تُرفع أبداً
+.env
+.env.*
+*.pem
+*.key
+.netrc
+.git-credentials

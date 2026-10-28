@@ -38,6 +38,32 @@ FORBIDDEN = [
     ("الباقي بالتسليم", "شعار دفع"),
     ("قبل البدء", "شعار دفع"),
     ("يكتب من البداية", "شعار السعر القديم"),
+    # إضافة 28 أكتوبر 2026 — صفات الشغل على الصور وفي أي نص مرئي
+    ("فواصل مرتبة", "كتابة عن الفواصل"),
+    ("فواصل مستقيمة", "كتابة عن الفواصل"),
+    ("فواصل نظيفة", "كتابة عن الفواصل"),
+    ("فواصل داخلية", "كتابة عن الفواصل"),
+    ("الفواصل تبين", "كتابة عن الفواصل"),
+    ("مكنوس", "وصف مكان مكنوس"),
+    ("شغل نظيف", "صفة نظافة"),
+    ("شغل مرتب", "صفة ترتيب"),
+    ("نظيف ومرتب", "صفة نظافة"),
+    ("نظيف", "صفة نظافة"),
+    ("مرتب", "صفة ترتيب"),
+    # وعود زمنية مقنّعة
+    ("دقة في المواعيد", "التزام زمني"),
+    ("المواعيد", "التزام زمني"),
+    ("في الموعد", "التزام زمني"),
+    ("الالتزام بالوقت", "التزام زمني"),
+    ("جودة في التنفيذ", "صفة عامة بلا دليل"),
+    # قواعد الكتابة المعتمدة 28 أكتوبر 2026
+    ("أمشي على كلامنا", "عبارة ليست من اللهجة السعودية — البديل نتفق من أولها"),
+    ("المواد على صاحب", "لا تُذكر المواد في نص يراه الزبون"),
+    ("المواد عليك", "لا تُذكر المواد في نص يراه الزبون"),
+    ("المواد منك", "لا تُذكر المواد في نص يراه الزبون"),
+    ("أقولك السعر", "البديل نشوف السعر المناسب لشغلك"),
+    ("أعطيك السعر", "البديل نشوف السعر المناسب لشغلك"),
+    ("تسليم هندسي", "عبارة مو غريبة على الزبون — البديل الشغل على أصول المهنة"),
 ]
 
 PUNCT = ".,،؛:؟!\"«»…"
@@ -136,6 +162,64 @@ def check_ads() -> None:
         print(f"  {rel}: عنوان {len(title)} | وصف {len([x for x in desc.splitlines() if x.strip()])} سطراً | صور {len(imgs)}")
 
 
+def check_head_basics() -> None:
+    """أساسيات لا يعمل الموقع بدونها: الترميز والتجاوب والستايل والسكربت."""
+    print("\n== أساسيات الصفحات ==")
+    need = {
+        'charset="utf-8"': "الترميز charset مطلوب وإلا تظهر العربية مشوّهة",
+        'name="viewport"': "viewport مطلوب وإلا يفشل العرض على الجوال",
+        'css/site.css': "ملف الستايل غير مربوط",
+        'rel="canonical"': "canonical مطلوب للسيو",
+    }
+    for f in sorted(Path("موقع").glob("*.html")):
+        html = f.read_text(encoding="utf-8")
+        missing = [msg for key, msg in need.items() if key not in html]
+        if missing:
+            add("P0", f.relative_to(ROOT), " و ".join(missing))
+    n = len(list(Path("موقع").glob("*.html")))
+    print(f"  فُحص {n} صفحة")
+
+
+def check_name() -> None:
+    """يتحقق أن الاسم الظاهر يجمع معلم بلك ومعلم مباني معاً."""
+    print("\n== الاسم الظاهر ==")
+    must = ["معلم بلك", "معلم مباني"]
+    targets = [Path("README.md"), Path("00-لوحة-التحكم.md"),
+               Path("إعلانات/معلم-بلك-يومية-ومقطوعية/إعلان-معلم-بلك-يومية-ومقطوعية.md")]
+    targets += list(Path("موقع").glob("*.html"))
+    for f in targets:
+        if not f.exists():
+            continue
+        txt = f.read_text(encoding="utf-8")
+        if "أبو محمد" in txt:
+            missing = [m for m in must if m not in txt]
+            if missing:
+                add("P2", f, f"الاسم ناقص: {' و'.join(missing)}")
+    print("  تحقق الاسم في", len([t for t in targets if t.exists()]), "ملفاً")
+
+
+def check_image_texts() -> None:
+    """فحص نصوص الصور المسجلة، لأن الصورة نفسها لا تُقرأ بالـ OCR."""
+    print("\n== نصوص الصور ==")
+    files = sorted(ROOT.glob("إعلانات/*/نصوص-الصور.md"))
+    if not files:
+        add("P1", "إعلانات", "لا يوجد ملف نصوص-الصور.md في أي إعلان")
+        return
+    for f in files:
+        rel = f.relative_to(ROOT)
+        t = read(f)
+        for hit in scan_forbidden(t):
+            add("P0", rel, f"نص صورة ممنوع: {hit}")
+        blocks = re.findall(r"```\n(.*?)\n```", t, re.S)
+        visible = "\n".join(blocks)
+        bad_visible = sorted({c for c in visible if c in PUNCT})
+        if bad_visible:
+            add("P1", rel, "ترقيم في نص صورة: " + " ".join(bad_visible))
+        if PHONE not in t:
+            add("P1", rel, "الرقم غير مذكور في ملف نصوص الصور")
+        print(f"  {rel}: {len(blocks)} كتلة نص | ممنوعات {len(scan_forbidden(t))}")
+
+
 def check_site() -> None:
     print("\n== الموقع ==")
     pages = sorted(ROOT.glob("موقع/*.html"))
@@ -226,10 +310,58 @@ def check_images(with_sizes: bool = False) -> None:
     print(f"  عدد الصور {total} | فوق 700 كيلوبايت: {big}")
 
 
+def check_sizes() -> None:
+    """يتحقق صراحة من المقاسات المعتمدة لكل صورة في الإعلانات."""
+    print("\n== المقاسات ==")
+    # (اسم الملف، العرض، الارتفاع، التسمية)
+    rules = [
+        ("01-الغلاف.jpg", 1080, 1080, "صورة إعلان"),
+        ("02-السور.jpg", 1080, 1080, "صورة إعلان"),
+        ("03-الغرفة.jpg", 1080, 1080, "صورة إعلان"),
+        ("04-الجدار.jpg", 1080, 1080, "صورة إعلان"),
+        ("05-البوابة.jpg", 1080, 1080, "صورة إعلان"),
+        ("06-الملاحق.jpg", 1080, 1080, "صورة إعلان"),
+        ("07-الزاوية.jpg", 1080, 1080, "صورة إعلان"),
+        ("08-بطاقة-يومية-ومقطوعية.png", 1080, 1080, "بطاقة"),
+        ("09-بطاقة-خطوات-السعر.png", 1080, 1080, "بطاقة"),
+        ("10-ستوري.jpg", 1080, 1920, "ستوري"),
+        ("11-ستوري-الغرفة.jpg", 1080, 1920, "ستوري"),
+        ("غلاف-1500.jpg", 1500, 1500, "غلاف المنصة"),
+        ("صورة-الحساب-400.png", 400, 400, "صورة الحساب"),
+    ]
+    try:
+        from PIL import Image
+    except ImportError:
+        print("  Pillow غير مثبت، تخطي فحص المقاسات")
+        return
+
+    for ad in sorted((ROOT / "إعلانات").glob("*/صور")):
+        if not ad.is_dir():
+            continue
+        found = 0
+        for name, w, h, label in rules:
+            f = ad / name
+            if not f.exists():
+                continue
+            found += 1
+            real = Image.open(f).size
+            if real != (w, h):
+                add("P0", f.relative_to(ROOT),
+                    f"{label} مقاسها {real[0]}×{real[1]} والمطلوب {w}×{h}")
+        missing = [n for n, *_ in rules if not (ad / n).exists()]
+        if missing:
+            add("P1", ad.relative_to(ROOT), f"صور ناقصة: {', '.join(missing)}")
+        print(f"  {ad.relative_to(ROOT)}: تحقق {found} صورة | ناقص {len(missing)}")
+
+
 def main() -> int:
     check_ads()
+    check_head_basics()
+    check_name()
+    check_image_texts()
     check_site()
     check_links()
+    check_sizes()
     check_images("--صور" in sys.argv)
     print("\n== النتيجة ==")
     if not issues:
