@@ -25,7 +25,7 @@ from bidi.algorithm import get_display
 ROOT = Path(__file__).resolve().parent.parent
 FONT_DIR = Path(os.environ.get("MYDAD_FONTS", "/home/user/.cache/mydad-img"))
 
-NAME = "البخيتي للبناء والمقاولات"
+NAME = "أبو محمد معلم مباني"
 PHONE = "0531060401"
 
 GOLD = (202, 156, 84)
